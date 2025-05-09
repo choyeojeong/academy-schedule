@@ -1,0 +1,28 @@
+/* ✅ src/components/LessonList.css */
+.lesson-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 15px;
+  }
+  
+  .lesson-table th,
+  .lesson-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .lesson-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .lesson-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .lesson-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
