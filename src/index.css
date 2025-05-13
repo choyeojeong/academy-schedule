@@ -1,0 +1,119 @@
+/* 색상 정의 */
+:root {
+  --beige-bg: #f5f0e6;
+  --card-bg: #ffffff;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --accent: #c5a880;
+  --border: #e0dcd5;
+  --shadow: rgba(0, 0, 0, 0.05);
+}
+
+/* 전체 배경 */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: var(--beige-bg);
+  color: var(--text-primary);
+}
+
+/* 공통 카드 */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+/* 버튼 스타일 */
+button {
+  background-color: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #b38b6e;
+}
+
+/* 입력 필드 스타일 */
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(197, 168, 128, 0.3);
+}
+
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+}
+
+th, td {
+  padding: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+th {
+  background: var(--beige-bg);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* 페이지 헤더 */
+h2, h3, h4 {
+  margin-top: 0;
+  color: var(--text-primary);
+}
+
+/* 달력 */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-cell {
+  padding: 12px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--card-bg);
+  transition: background-color 0.2s;
+}
+
+.calendar-cell:hover {
+  background: var(--accent);
+  color: #fff;
+}
