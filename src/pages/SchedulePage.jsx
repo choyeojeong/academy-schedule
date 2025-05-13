@@ -48,9 +48,15 @@ function SchedulePage() {
     fetchLessons();
     const channel = supabase
       .channel('lesson-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'lessons' }, () => fetchLessons())
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'lessons' },
+        () => fetchLessons()
+      )
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [week]);
 
   const handleAddMakeup = async () => {
@@ -58,7 +64,6 @@ function SchedulePage() {
       alert('학생 이름, 날짜, 시간을 모두 입력해주세요');
       return;
     }
-    // Find student by name
     const studentEntry = Object.values(studentsMap).find(
       (s) => s.name === studentNameInput
     );
@@ -78,7 +83,6 @@ function SchedulePage() {
       status: '보강추가',
     });
 
-    // Reset form
     setStudentNameInput('');
     setMakeupDate('');
     setMakeupTime('');
@@ -92,7 +96,11 @@ function SchedulePage() {
         수업리스트 새로고침
       </button>
 
-      <LessonTable lessons={lessons} studentsMap={studentsMap} onUpdate={fetchLessons} />
+      <LessonTable
+        lessons={lessons}
+        studentsMap={studentsMap}
+        onUpdate={fetchLessons}
+      />
 
       <div style={{ border: '1px solid #ccc', padding: 20, marginTop: 20 }}>
         <h3>보강수업 추가</h3>

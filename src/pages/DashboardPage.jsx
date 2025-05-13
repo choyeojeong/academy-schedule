@@ -3,7 +3,6 @@ import { supabase } from '../utils/supabaseClient';
 import AddStudentModal from '../components/AddStudentModal';
 import EditStudentModal from '../components/EditStudentModal';
 import Calendar from '../components/Calendar';
-import dayjs from 'dayjs';
 
 function DashboardPage() {
   const [students, setStudents] = useState([]);
@@ -14,9 +13,8 @@ function DashboardPage() {
     const { data, error } = await supabase
       .from('students')
       .select('*')
-      .is('deleted_at', null) // 삭제되지 않은 학생만
+      .is('deleted_at', null)
       .order('id');
-
     if (!error) setStudents(data);
   };
 
@@ -32,20 +30,15 @@ function DashboardPage() {
     }
     if (!window.confirm(`${student.name} 학생을 ${date}부터 퇴원 처리할까요?`))
       return;
-
-    // 1. 학생 삭제일 기록
     await supabase
       .from('students')
       .update({ deleted_at: date })
       .eq('id', student.id);
-
-    // 2. 해당 날짜 이후 수업 삭제
     await supabase
       .from('lessons')
       .delete()
       .gte('date', date)
       .eq('student_id', student.id);
-
     fetchStudents();
   };
 
@@ -55,6 +48,11 @@ function DashboardPage() {
 
   return (
     <div style={{ padding: 20 }}>
+      {/* 1️⃣ 달력 먼저 */}
+      <h2>📅 달력</h2>
+      <Calendar />
+
+      {/* 2️⃣ 학생 검색 & 목록 */}
       <h2>학생 목록</h2>
       <input
         placeholder="검색: 이름/학교/학년/선생님"
@@ -63,7 +61,11 @@ function DashboardPage() {
         style={{ marginBottom: 10 }}
       />
       <AddStudentModal onAdd={fetchStudents} />
-      <table border="1" cellPadding="6" style={{ width: '100%', marginBottom: 30 }}>
+      <table
+        border="1"
+        cellPadding="6"
+        style={{ width: '100%', marginBottom: 30 }}
+      >
         <thead>
           <tr>
             <th>번호</th>
@@ -96,9 +98,6 @@ function DashboardPage() {
         </tbody>
       </table>
 
-      <h2>📅 달력</h2>
-      <Calendar />
-
       {editStudent && (
         <EditStudentModal
           student={editStudent}
@@ -107,7 +106,8 @@ function DashboardPage() {
         />
       )}
     </div>
-  );
-}
+);
+
+}  // <-- 함수 닫는 중괄호 위치!
 
 export default DashboardPage;
