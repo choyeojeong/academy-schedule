@@ -24,7 +24,7 @@ function LessonTable({ lessons, studentsMap, onUpdate }) {
       .update({
         start: null,
         end: null,
-        ...(isMakeup ? {} : { status: null })
+        ...(isMakeup ? {} : { status: null }),
       })
       .eq('id', lesson.id);
     setEditingId(null);
@@ -236,6 +236,119 @@ function LessonTable({ lessons, studentsMap, onUpdate }) {
                           <button onClick={() => handleAttend(lesson, startTimes[lesson.id])}>저장</button>
                           <button onClick={() => handleAttend(lesson)}>지금부터</button>
                           <button onClick={() => setEditingId(null)}>취소</button>
+                        </div>
+                      ) : absentInfo ? (
+                        <div style={{ fontSize: '0.85em' }}>
+                          <div>
+                            사유:{' '}
+                            <input
+                              type="text"
+                              value={absentInfo.reason}
+                              onChange={(e) =>
+                                setAbsentInfoMap((prev) => ({
+                                  ...prev,
+                                  [lesson.id]: { ...prev[lesson.id], reason: e.target.value },
+                                }))
+                              }
+                            />
+                          </div>
+                          <div>
+                            보강:{' '}
+                            <select
+                              value={absentInfo.makeup}
+                              onChange={(e) =>
+                                setAbsentInfoMap((prev) => ({
+                                  ...prev,
+                                  [lesson.id]: { ...prev[lesson.id], makeup: e.target.value },
+                                }))
+                              }
+                            >
+                              <option value="X">보강X</option>
+                              <option value="O">보강O</option>
+                            </select>
+                          </div>
+
+                          {absentInfo.makeup === 'O' && (
+                            <>
+                              <div>
+                                날짜:{' '}
+                                <input
+                                  type="date"
+                                  value={absentInfo.makeupDate}
+                                  onChange={(e) =>
+                                    setAbsentInfoMap((prev) => ({
+                                      ...prev,
+                                      [lesson.id]: { ...prev[lesson.id], makeupDate: e.target.value },
+                                    }))
+                                  }
+                                />
+                              </div>
+                              <div>
+                                시간:{' '}
+                                <input
+                                  type="text"
+                                  placeholder="예: 16:00"
+                                  value={absentInfo.makeupTime}
+                                  onChange={(e) =>
+                                    setAbsentInfoMap((prev) => ({
+                                      ...prev,
+                                      [lesson.id]: { ...prev[lesson.id], makeupTime: e.target.value },
+                                    }))
+                                  }
+                                />
+                              </div>
+                            </>
+                          )}
+
+                          <button
+                            onClick={async () => {
+                              const { reason, makeup, makeupDate, makeupTime } = absentInfo;
+                              let status = `결석 (${reason})`;
+
+                              if (makeup === 'O') {
+                                await supabase.from('lessons').insert({
+                                  student_id: lesson.student_id,
+                                  student_name: lesson.student_name,
+                                  student_school: lesson.student_school,
+                                  student_grade: lesson.student_grade,
+                                  student_teacher: lesson.student_teacher,
+                                  date: makeupDate,
+                                  time: makeupTime,
+                                  status: `보강 (${lesson.date} 결석, 사유: ${reason})`,
+                                });
+                              }
+
+                              await supabase
+                                .from('lessons')
+                                .update({
+                                  status,
+                                  makeup_date: makeup === 'O' ? makeupDate : null,
+                                  makeup_time: makeup === 'O' ? makeupTime : null,
+                                })
+                                .eq('id', lesson.id);
+
+                              setAbsentInfoMap((prev) => {
+                                const next = { ...prev };
+                                delete next[lesson.id];
+                                return next;
+                              });
+
+                              onUpdate();
+                            }}
+                          >
+                            저장
+                          </button>
+                          <button
+                            onClick={() =>
+                              setAbsentInfoMap((prev) => {
+                                const next = { ...prev };
+                                delete next[lesson.id];
+                                return next;
+                              })
+                            }
+                          >
+                            취소
+                          </button>
                         </div>
                       ) : (
                         <>
